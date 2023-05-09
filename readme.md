@@ -67,3 +67,5 @@ Luego por cada par de origen $s$ y destino $t$, calculamos las aristas que parti
 - **Demostración:** Por la **Propiedad 3** sabemos que los vértices que cumplen $\delta(s,t) = \delta(s,u) + \delta(v,t)$ son vertices que participan en algún camino de costo mínimo; por lo que estamos acumulando son las aritstas que participan en algún camino de costo mínimo que parte de s donde el vértice más lejano a s, de los dos vértices que relaciona, pertenece a un camino de costo mínimo de s a t, que por la **Propiedad 1** son las aristas que participan en algún camino de costo mínimo. Cada arista es contada una única vez porque se cuenta solo en el vértice más lejano a $s$ 
 
 ### Análisis de la complejidad
+
+Nuestro algoritmo consiste en realizar O($|V|$) veces un algoritmo de dijkstra con modificaciones que no afectan su complejidad por lo que en el peor caso es O($|V|^2$) Por lo que la complejidad de esa parte queda O($|V|^3$). Es un doble for por los posibles orígenes que es O($|V|^2$) y dentro un recorrido por el resto de los vértices que es O($|V|$) por lo que en total que O($|V|^3$) por lo que el algoritmo entero es O($|V|^3$)
