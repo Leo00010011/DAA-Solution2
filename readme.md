@@ -46,6 +46,12 @@ Teniendo calculado esto se puede resolver en O($|V|$) las aristas que participan
   
   - ($B \Rightarrow A$) Si $\delta(s,v) = \delta(s,u) + w(<u,v>)$ entonces sea $P$ un camino de longitud mínima de $s$ a $u$ y añadele al final a $v$ a travez de la arista $<u,v>$ y se tiene un camino de $s$ a $v$ con longitud $\delta(s,v)$ por lo que este camino es un camino de longitud mínima de $s$ a $v$ en el que  $<u,v>$ participa
 
+**Propiedad 3**: Un vértice $v$ participa en un camino de costo mínimo  de $s$ a $t$ ssi $\delta(s,t) = \delta(s,v) + \delta(v,t)$ 
 
+- **Demostración:** 
+  
+  - ($A \Rightarrow B$) Si un vertice participa en un camino de costo mínimo de $s$ a $t$ es evidente que se cumple que $\delta(s,t) = \delta(s,v) + \delta(v,t)$ 
+  
+  - Sea $v$ un vértice que cumple $\delta(s,t) = \delta(s,v) + \delta(v,t)$ entonces sea $P$ un camino de longitud mínima de $s$ a $v$ y $Q$ un camino de longitud mínima de $v$ a $t$ entonces la concatenación de estos dos caminos es un camino de $s$ a $t$ con longitud $\delta(s,t)$ por lo que es un camino de longitud mínima de $s$ a $t$ que contiene a $v$ 
 
 ### Análisis de la complejidad
