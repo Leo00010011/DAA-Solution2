@@ -75,16 +75,16 @@ def calculate_count_edges(edges_matrix):
 #    'D': {'B': 3, 'C': 6}
 #}
 
-graph = {
-    'A': {'B': 5, 'C': 2,         'array': {'B': 0, 'C': 0, 'D': 0} },
-    'B': {'A': 5, 'C': 3, 'D': 3, 'array': {'A': 0, 'C': 0, 'D': 0} },
-    'C': {'A': 2, 'B': 3, 'D': 6, 'array': {'A': 0, 'B': 0, 'D': 0} },
-    'D': {'B': 3, 'C': 6,         'array': {'A': 0, 'B': 0, 'C': 0} }
-}
+#graph = {
+#    'A': {'B': 5, 'C': 2,         'array': {'A': 0, 'B': 0, 'C': 0, 'D': 0} },
+#    'B': {'A': 5, 'C': 3, 'D': 3, 'array': {'A': 0, 'B': 0, 'C': 0, 'D': 0} },
+#    'C': {'A': 2, 'B': 3, 'D': 6, 'array': {'A': 0, 'B': 0, 'C': 0, 'D': 0} },
+#    'D': {'B': 3, 'C': 6,         'array': {'A': 0, 'B': 0, 'C': 0, 'D': 0} }
+#}
 
-distance, edges = slow_solver(graph)
+#distance, edges = slow_solver(graph)
 
-print("Distancia: ", distance)
-print()
-print("Aristas: ", edges)
-print()
+#print("Distancia: ", distance)
+#print()
+#print("Aristas: ", edges)
+#print()
