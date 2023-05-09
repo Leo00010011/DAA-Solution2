@@ -1,5 +1,16 @@
 import heapq
 
+def slow_solver(graph):
+    for i in range(len(graph)):
+        start_vertex = list(graph.items())[i][0]
+        distances, edges_ccm = dijkstra(graph, start_vertex)
+        for item, v in zip(distances.items(), edges_ccm):
+            vertex, distance = item
+            print(f'Distancia desde {start_vertex} hasta {vertex}: {distance}')
+            print(f'Aristas involucradas: {edges_ccm[v]}')
+            
+    return distances, edges_ccm
+
 def dijkstra(graph, start):
     distances = {vertex: float('inf') for vertex in graph}
     edges_ccm = {vertex: set() for vertex in graph}
@@ -32,17 +43,10 @@ def dijkstra(graph, start):
 
     return distances, edges_ccm
 
-graph = {
-    'A': {'B': 5, 'C': 2},
-    'B': {'A': 5, 'C': 3, 'D': 3},
-    'C': {'A': 2, 'B': 3, 'D': 6},
-    'D': {'B': 3, 'C': 6}
-}
+#graph = {
+#    'A': {'B': 5, 'C': 2},
+#    'B': {'A': 5, 'C': 3, 'D': 3},
+#    'C': {'A': 2, 'B': 3, 'D': 6},
+#    'D': {'B': 3, 'C': 6}
+#}
 
-for i in range(len(graph)):
-    start_vertex = list(graph.items())[i][0]
-    distances, edges_ccm = dijkstra(graph, start_vertex)
-    for item, v in zip(distances.items(), edges_ccm):
-        vertex, distance = item
-        print(f'Distancia desde {start_vertex} hasta {vertex}: {distance}')
-        print(f'Aristas involucradas: {edges_ccm[v]}')
