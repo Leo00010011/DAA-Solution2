@@ -10,7 +10,7 @@
 
 ### La idea de la solución
 
-La solución consiste en la propiedad de que el conjunto de las aristas que participan en un camino de costo mínimo de $s$ a $t$, es igual a la intercepción del conjunto de las aritstas que participan en algún camino de costo mínimo que parte de $s$, con el conjunto de las aristas que relaciona algun vértice que pertenece a un camino de costo mínimo de $s$ a $t$. 
+La solución se basa en la propiedad de que el conjunto de las aristas que participan en un camino de costo mínimo de $s$ a $t$, es igual a la intercepción del conjunto de las aritstas que participan en algún camino de costo mínimo que parte de $s$, con el conjunto de las aristas donde el vértice más lejano a $s$, de los dos vértices que relaciona, pertenece a un camino de costo mínimo de $s$ a $t$. 
 
 Luego para calcular las aristas que participan en algun camino de costo mínimo que parte de $s$ usamos la propiedad de que una arista $<u,v>$ con $\delta(s,u) < \delta(s,v)$ cumple esto ssi $\delta(s,u) = \delta(s,u) + w(<u,v>)$
 
@@ -28,12 +28,16 @@ Teniendo calculado esto se puede resolver en O($|V|$) las aristas que participan
 
 ### El algoritmo
 
-
-
 ### Demostración de la Correctitud
 
+**Propiedad 1** :el conjunto de las aristas que participan en un camino de costo mínimo de $s$ a $t$, es igual a la intercepción del conjunto de las aritstas que participan en algún camino de costo mínimo que parte de $s$, con el conjunto de las aristas donde el vértice más lejano a $s$, de los dos vértices que relaciona, pertenece a un camino de costo mínimo de $s$ a $t$.
+
+- **Demostración**: 
+  
+  * ($A \sub B$) Si una arista pertenece a un camino de costo mínimo de $s$ a $t$ entonces es lógico que esta arista pertenezca a algún camino de  costo mínimo que parte de $s$ y que ambos de los vértices que relacione pertenezcan a un camino de costo mínimo de $s$ a $t$
+  
+  *  ($B \sub A$) Luego sea $<u,v>$ una arista que pertenece a algún camino de costo mínimo de $s$, supongamos $\delta(s,u) < \delta(s,v)$  y que $v$ pertenece a algún camino de costo mínimo de $s$ a $t$. Luego sea $P$ el camino de costo mínimo de $s$ a $t$ que contiene a $v$ y sea $Q$ el camino de costo mínimo que parte de $s$ que contiene la arista $<u,v>$. Luego el subcamino de $Q$ hasta $v$ contiene la arista $<u,v>$ porque $v$ está más alejado de $s$ que $u$ y la longitud de este subcamino es igual a la longitud del subcamino hasta $v$ en $P$; por lo que al sustituir en $P$ su subcamino hasta $v$, por el subcamino hasta $v$ de $Q$ se obtiene un camino de $s$ a $t$ con la misma longitud de $P$ que contiene a $<u,v>$ por lo que pertenece a un camino de longitud mínima de $s$ a $t$ 
 
 
- 
 
 ### Análisis de la complejidad
