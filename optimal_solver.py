@@ -8,9 +8,10 @@ class Vertex:
         self.neighbourhood : list[(Vertex,int)] = []
         
 
-def make_edge(a:Vertex,b:Vertex):
-    a.neighbourhood.append(b)
-    b.neighbourhood.append(a)
+def make_edge(a:Vertex,b:Vertex,weight:int):
+    a.neighbourhood.append((b,weight))
+    b.neighbourhood.append((a,weight))
+
 
 
 def optimal_solver(graph:list[Vertex],principal_vertex:list[Vertex]): 
