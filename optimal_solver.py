@@ -2,13 +2,14 @@ import heapq
 
 def optimal_solver(graph): 
     #Primero hago Dijkstra para todos los vertices del grafo
-    for i in range(len(graph)):
-        start_vertex = list(graph.items())[i][0]
-        distances = dijkstra(graph, start_vertex)
-        distances_matrix[start_vertex] = distances
-        print(start_vertex)
-        print(graph)
-        print()
+    edges_matrix = []
+    distances_matrix = []
+    for vertex in graph:
+        vertex.min_edges = [0 for _ in range(len(principal_vertex))]
+        distances_matrix.append([])
+    for vertex in principal_vertex:
+        distances = dijkstra_modificado(graph, vertex)
+        distances_matrix[vertex] = distances
 
     for u in graph:
         for v in graph:
@@ -74,3 +75,15 @@ def dijkstra(graph, start):
 #    'C': {'A': 0, 'B': 0, 'C': 0, 'D': 0 },
 #    'D': {'A': 0, 'B': 0, 'C': 0, 'D': 0 }
 #}
+graph = []
+for i in 4:
+    v = Vertex()
+    graph.append(v)
+for v in graph:
+    v.neighbor
+
+distance, edges = optimal_solver(graph)
+
+print("Distancia: ", distance)
+print()
+print("Aristas: ", edges)
