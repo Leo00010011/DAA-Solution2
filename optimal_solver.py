@@ -2,6 +2,8 @@ import heapq
 
 def optimal_solver(graph): 
     #Primero hago Dijkstra para todos los vertices del grafo
+    edges_matrix = {}
+    distances_matrix = {}
     for i in range(len(graph)):
         start_vertex = list(graph.items())[i][0]
         distances = dijkstra(graph, start_vertex)
@@ -18,6 +20,8 @@ def optimal_solver(graph):
                 if u == w or v == w: continue
                 if distances_matrix[u][w] + distances_matrix[w][v] == distances_matrix[u][v]:
                     edges_count += graph[w]['array'][u]
+            if u not in edges_matrix:
+                edges_matrix[u] = {}
             edges_matrix[u][v] = edges_count
 
     for item, edge in zip(distances_matrix.items(), edges_matrix.items()):
@@ -60,13 +64,13 @@ def dijkstra(graph, start):
 # Cada vertice tiene los costos de sus aristas con sus respectivos adyacentes y un diccionario
 # de todos lo vertices con las respectivas cantidades de aristas que llegan al él en un CCM.
 
-#graph = {
-#    'A': {'B': 5, 'C': 2,         'array': {'B': 0, 'C': 0, 'D': 0} },
-#    'B': {'A': 5, 'C': 3, 'D': 3, 'array': {'A': 0, 'C': 0, 'D': 0} },
-#    'C': {'A': 2, 'B': 3, 'D': 6, 'array': {'A': 0, 'B': 0, 'D': 0} },
-#    'D': {'B': 3, 'C': 6,         'array': {'A': 0, 'B': 0, 'C': 0} }
-#}
-#
+graph = {
+    'A': {'B': 5, 'C': 2,         'array': {'B': 0, 'C': 0, 'D': 0} },
+    'B': {'A': 5, 'C': 3, 'D': 3, 'array': {'A': 0, 'C': 0, 'D': 0} },
+    'C': {'A': 2, 'B': 3, 'D': 6, 'array': {'A': 0, 'B': 0, 'D': 0} },
+    'D': {'B': 3, 'C': 6,         'array': {'A': 0, 'B': 0, 'C': 0} }
+}
+
 #distances_matrix = {}
 #edges_matrix = { 
 #    'A': {'A': 0, 'B': 0, 'C': 0, 'D': 0 },
@@ -74,3 +78,8 @@ def dijkstra(graph, start):
 #    'C': {'A': 0, 'B': 0, 'C': 0, 'D': 0 },
 #    'D': {'A': 0, 'B': 0, 'C': 0, 'D': 0 }
 #}
+distance, edges = optimal_solver(graph)
+
+print("Distancia: ", distance)
+print()
+print("Aristas: ", edges)

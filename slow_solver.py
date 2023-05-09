@@ -27,6 +27,8 @@ def dijkstra(graph, start):
         visited.add(current_vertex)
 
         for neighbor, weight in graph[current_vertex].items():
+            if neighbor == 'array': continue
+            
             distance = current_distance + weight
             current_edges = set()
             edge = (current_vertex,neighbor)
