@@ -12,13 +12,6 @@ def slow_solver(graph):
         #print(start_vertex)
         #print(graph)
         #print()
-    
-    #for item, edge in zip(distances_matrix.items(), edges_matrix.items()):
-    #    vertex, distance = item
-    #    vertex, vert_count_edges = edge
-    #    print(f'Distancia desde {vertex} hasta {distance}')
-    #    print(f'Cantidad de aristas involucradas desde {vertex} hasta {vert_count_edges}')
-    #    print()
 
     edges_matrix = calculate_count_edges(edges_matrix)
     return distances_matrix, edges_matrix

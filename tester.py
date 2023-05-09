@@ -6,7 +6,7 @@ from random import randint
 import json
 import os.path
 
-def gen_cases(count, num_nodes, num_edges, min_weight = 1, max_weight = 10, rand_func = random_generator_graph, file_path = 'test.txt'):
+def gen_cases(count, num_nodes, num_edges, min_weight = 1, max_weight = 10, rand_func = random_generator_graph, file_path = 'gen_cases.txt'):
     to_save = []
     if os.path.exists(file_path) and os.path.isfile(file_path):
         with open(file_path,'r') as fin:
@@ -53,4 +53,5 @@ def tester(cases_count: int, num_nodes: int, num_edges: int):
             print(Fore.WHITE)
 
 
-tester(1, 4, 5)
+#tester(1, 4, 5)
+gen_cases(1, 4, 5)
