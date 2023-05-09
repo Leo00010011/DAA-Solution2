@@ -12,7 +12,10 @@ def make_edge(a:Vertex,b:Vertex,weight:int):
     a.neighbourhood.append((b,weight))
     b.neighbourhood.append((a,weight))
 
-
+def print_graph(graph : list[Vertex]):
+    for vertex in graph:
+        s = ','.join([f'({ady.Id}, {weight})' for ady,weight in vertex.neighbourhood])
+        print(f'{vertex.Id}: ' + s)
 
 def optimal_solver(graph:list[Vertex],principal_vertex:list[Vertex]): 
     #Primero hago Dijkstra para todos los vertices del grafo

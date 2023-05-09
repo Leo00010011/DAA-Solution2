@@ -1,5 +1,7 @@
 import heapq
 
+
+
 def slow_solver(graph):
     edges_matrix = {}
     distances_matrix = {}
@@ -9,9 +11,6 @@ def slow_solver(graph):
         distances, edges_ccm = dijkstra(graph, start_vertex)
         distances_matrix[start_vertex] = distances
         edges_matrix[start_vertex] = edges_ccm
-        #print(start_vertex)
-        #print(graph)
-        #print()
 
     edges_matrix = calculate_count_edges(edges_matrix)
     return distances_matrix, edges_matrix
@@ -21,7 +20,6 @@ def dijkstra(graph, start):
     edges_ccm = {vertex: set() for vertex in graph}
     distances[start] = 0
     visited = set()
-
     priority_queue = [(0, start)]
 
     while priority_queue:
