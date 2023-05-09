@@ -1,20 +1,30 @@
 import heapq
 
-def optimal_solver(graph): 
+class Vertex:
+    Id = 0
+    def __init__(self):
+        self.Id = Vertex.Id
+        Vertex.Id = Vertex.Id + 1
+        self.neighbourhood : list[(Vertex,int)] = []
+        
+
+def make_edge(a:Vertex,b:Vertex):
+    a.neighbourhood.append(b)
+    b.neighbourhood.append(a)
+
+
+def optimal_solver(graph:list[Vertex],principal_vertex:list[Vertex]): 
     #Primero hago Dijkstra para todos los vertices del grafo
-    edges_matrix = {}
-    distances_matrix = {}
-    for i in range(len(graph)):
-        start_vertex = list(graph.items())[i][0]
-        distances = dijkstra(graph, start_vertex)
-        distances_matrix[start_vertex] = distances
-        #print(start_vertex)
-        #print(graph)
-        #print()
+    edges_matrix = []
+    distances_matrix = []
+    for vertex in graph:
+        vertex.min_edges = [0 for _ in range(len(principal_vertex))]
+    for vertex in graph:
+        distances = dijkstra_modificado(graph, vertex)
+        distances_matrix.append(distances)
 
     for u in graph:
-        for v in graph:
-            if u == v: continue
+        for v in graph[u.Id + 1:]:
             edges_count = graph[v]['array'][u]
             for w in graph:
                 if u == w or v == w: continue
@@ -33,7 +43,7 @@ def optimal_solver(graph):
     return distances_matrix, edges_matrix
 
 
-def dijkstra(graph, start):
+def dijkstra_modificado(graph, start):
     distances = {vertex: float('inf') for vertex in graph}
     distances[start] = 0
     visited = set()
