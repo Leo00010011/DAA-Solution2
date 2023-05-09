@@ -1,15 +1,20 @@
 import heapq
 
 def slow_solver(graph):
+    edges_matrix = {}
+    distances_matrix = {}
+
     for i in range(len(graph)):
         start_vertex = list(graph.items())[i][0]
         distances, edges_ccm = dijkstra(graph, start_vertex)
-        for item, v in zip(distances.items(), edges_ccm):
-            vertex, distance = item
-            print(f'Distancia desde {start_vertex} hasta {vertex}: {distance}')
-            print(f'Aristas involucradas: {edges_ccm[v]}')
-            
-    return distances, edges_ccm
+        distances_matrix[start_vertex] = distances
+        edges_matrix[start_vertex] = edges_ccm
+        #print(start_vertex)
+        #print(graph)
+        #print()
+
+    edges_matrix = calculate_count_edges(edges_matrix)
+    return distances_matrix, edges_matrix
 
 def dijkstra(graph, start):
     distances = {vertex: float('inf') for vertex in graph}
@@ -27,6 +32,8 @@ def dijkstra(graph, start):
         visited.add(current_vertex)
 
         for neighbor, weight in graph[current_vertex].items():
+            if neighbor == 'array': continue
+
             distance = current_distance + weight
             current_edges = set()
             edge = (current_vertex,neighbor)
@@ -43,6 +50,17 @@ def dijkstra(graph, start):
 
     return distances, edges_ccm
 
+def calculate_count_edges(edges_matrix):
+    result = {}
+    
+    for u, array in edges_matrix.items():
+        result[u] = {}
+        for v in array:
+            if u == v: continue
+            result[u][v] = len(array[v])
+
+    return result
+
 #graph = {
 #    'A': {'B': 5, 'C': 2},
 #    'B': {'A': 5, 'C': 3, 'D': 3},
@@ -50,3 +68,16 @@ def dijkstra(graph, start):
 #    'D': {'B': 3, 'C': 6}
 #}
 
+#graph = {
+#    'A': {'B': 5, 'C': 2,         'array': {'A': 0, 'B': 0, 'C': 0, 'D': 0} },
+#    'B': {'A': 5, 'C': 3, 'D': 3, 'array': {'A': 0, 'B': 0, 'C': 0, 'D': 0} },
+#    'C': {'A': 2, 'B': 3, 'D': 6, 'array': {'A': 0, 'B': 0, 'C': 0, 'D': 0} },
+#    'D': {'B': 3, 'C': 6,         'array': {'A': 0, 'B': 0, 'C': 0, 'D': 0} }
+#}
+
+#distance, edges = slow_solver(graph)
+
+#print("Distancia: ", distance)
+#print()
+#print("Aristas: ", edges)
+#print()
