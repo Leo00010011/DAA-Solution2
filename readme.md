@@ -6,14 +6,34 @@
 
 * Roxana Peña Mendieta
 
-
-
 ### Descripcion del problema
 
-### La Idea de la solución
+### La idea de la solución
+
+La solución consiste en la propiedad de que el conjunto de las aristas que participan en un camino de costo mínimo de $s$ a $t$, es igual a la intercepción del conjunto de las aritstas que participan en algún camino de costo mínimo que parte de $s$, con el conjunto de las aristas que relaciona algun vértice que pertenece a un camino de costo mínimo de $s$ a $t$. 
+
+Luego para calcular las aristas que participan en algun camino de costo mínimo que parte de $s$ usamos la propiedad de que una arista $<u,v>$ con $\delta(s,u) < \delta(s,v)$ cumple esto ssi $\delta(s,u) = \delta(s,u) + w(<u,v>)$
+
+Para calcular los vértices que participan en un camino de costo mínimo de $s$ a $t$ usamos la propiedad de que un vértice cumple esto ssi $\delta(s,t) = \delta(s,v) + \delta(v,t)$
+
+Luego se puede utilizar el algoritmo de dijkstra para calcular, para cada posible origen, los caminos de costo mínimo y la aristas que participen en algunos de estos caminos. Para esto vamos a asignarle un array de tamaño $|V|$ a cada vértice $v$, donde almacenaremos en el índice $i$ la cantidad de aristas que cumplen que: 
+
+- participan en un camino de costo mínimo que parte de $V_i$ 
+
+- de los dos vértices que relaciona la arista el más lejano a ese origen es $v$
+
+Los valores de este array los calcularemos aprovechando el relax que necesita hacer dijkstra, haciendo incrimentar el valor de la posición $i$ si da igual y asignandole 1 si da menor.
+
+Teniendo calculado esto se puede resolver en O($|V|$) las aristas que participan en un camino de costo mínimo de $s$ a $t$ acumulando lo que tiene cada vertice que participa en un camino de costo mínimo de $s$ a $t$ en su array en la posición correspondiente a $s$. Por lo que iterando por cada posible origen y final y haciendo lo anterior se puede resolver esto en O($|V|^3$) y hacer $|V|$ dijkstras es O($|V|^3$) también por lo que la solución quedaría O($|V|^3$)
+
+### El algoritmo
+
+
 
 ### Demostración de la Correctitud
 
-### El algoritmo
+
+
+ 
 
 ### Análisis de la complejidad
