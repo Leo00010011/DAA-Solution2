@@ -8,9 +8,9 @@ def optimal_solver(graph):
         start_vertex = list(graph.items())[i][0]
         distances = dijkstra(graph, start_vertex)
         distances_matrix[start_vertex] = distances
-        print(start_vertex)
-        print(graph)
-        print()
+        #print(start_vertex)
+        #print(graph)
+        #print()
 
     for u in graph:
         for v in graph:
@@ -27,10 +27,9 @@ def optimal_solver(graph):
     for item, edge in zip(distances_matrix.items(), edges_matrix.items()):
         vertex, distance = item
         vertex, vert_count_edges = edge
-
-    print(f'Distancia desde {vertex} hasta {distance}')
-    print(f'Cantidad de aristas involucradas desde {vertex} hasta {vert_count_edges}')
-
+        #print(f'Distancia desde {vertex} hasta {distance}')
+        #print(f'Cantidad de aristas involucradas desde {vertex} hasta {vert_count_edges}')
+        #print()
     return distances_matrix, edges_matrix
 
 
