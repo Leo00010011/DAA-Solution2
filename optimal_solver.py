@@ -1,23 +1,5 @@
 import heapq
-
-class Vertex:
-    Id = 0
-    def __init__(self):
-        self.Id = Vertex.Id
-        Vertex.Id = Vertex.Id + 1
-        self.neighbourhood : list[(Vertex,int)] = []
-    
-    def __lt__(self, v):
-        return self.Id < v.Id
-    
-    def __eq__(self, v):
-        return self.Id == v.Id
-
-def make_edge(a:Vertex,b:Vertex,weight:int):
-    a.neighbourhood.append((b,weight))
-    b.neighbourhood.append((a,weight))
-
-
+from vertex import Vertex, make_edge
 
 def optimal_solver(graph:list[Vertex],principal_vertex:list[Vertex]): 
     #Primero hago Dijkstra para todos los vertices del grafo
