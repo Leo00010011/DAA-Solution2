@@ -1,5 +1,5 @@
 import random
-from optimal_solver import Vertex, make_edge
+from optimal_solver import Vertex, make_edge, graph_to_string
 
 def random_generator_graph(num_nodes, num_edges, min_weight = 1, max_weight = 10):
     graph = [Vertex() for _ in range(num_nodes)]
@@ -15,4 +15,4 @@ def random_generator_graph(num_nodes, num_edges, min_weight = 1, max_weight = 10
 num_nodes = 4
 num_edges = 5
 graph = random_generator_graph(num_nodes,num_edges)
-print(graph)
+graph_to_string(graph)
