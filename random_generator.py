@@ -1,18 +1,16 @@
 import random
-from optimal_solver import Vertex, make_edge, graph_to_string
+from structures import Vertex, Graph
 
 def random_generator_graph(num_nodes, num_edges, min_weight = 1, max_weight = 10):
-    graph = [Vertex() for _ in range(num_nodes)]
-    num_aristas = 0
-    while num_aristas < num_edges:
-        u, v = random.sample(graph, 2)
-        if v not in [pair[0] for pair in u.neighbourhood]:
-            weight = random.randint(min_weight, max_weight)
-            make_edge(u,v,weight)
-            num_aristas += 1
+    graph = Graph([Vertex() for _ in range(num_nodes)])
+    posible_edges = []
+    for ind_v, v in enumerate(graph.vertex):
+        for u in graph.vertex[ind_v + 1:]:
+            posible_edges.append((v,u))
+    for _ in range(num_edges):
+        u, v = posible_edges.pop(random.randint(0,len(posible_edges) - 1))
+        weight = random.randint(min_weight, max_weight)
+        graph.make_edge(u,v,weight)
     return graph
 
-num_nodes = 4
-num_edges = 5
-graph = random_generator_graph(num_nodes,num_edges)
-graph_to_string(graph)
+

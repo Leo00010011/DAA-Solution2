@@ -1,44 +1,39 @@
 import heapq
-from vertex import Vertex, make_edge
+from structures import Graph, Vertex
 
-def optimal_solver(graph:list[Vertex],principal_vertex:list[Vertex]): 
+
+def optimal_solver(graph:Graph,principal_vertex:list[Vertex]): 
     #Primero hago Dijkstra para todos los vertices del grafo
-    edges_matrix = [[0]*len(principal_vertex) for v in principal_vertex]
-    distances_matrix = []
-    for vertex in graph:
-        vertex.min_edges = [0 for _ in range(len(principal_vertex))]
-    for vertex in graph:
-        distances = dijkstra_modificado(graph, vertex)
-        distances_matrix.append(distances)
+    edges_matrix = [[0]*len(principal_vertex) for _ in principal_vertex]
+    distances_matrix = [[0]*len(graph.vertex) for _ in graph.vertex]
+    for vertex in graph.vertex:
+        vertex.min_edges = [0]*len(principal_vertex)
 
-    for u in graph:
-        for v in graph[u.Id + 1:]:
-            edges_count = v.min_edges[u.Id]
-            for w in graph:
+    for vertex_ind, vertex in enumerate(principal_vertex):
+        distances_matrix[vertex.Id] = dijkstra_modificado(graph, vertex,vertex_ind)
+    
+    for ind_u in range(len(principal_vertex)):
+        u = principal_vertex[ind_u]
+        for ind_v in range(ind_u + 1, len(principal_vertex)):
+            v = principal_vertex[ind_v]
+            edges_count = v.min_edges[ind_u]
+            for w in graph.vertex:
                 if u == w or v == w: continue
-                if distances_matrix[u.Id][w.Id] + distances_matrix[w.Id][v.Id] == distances_matrix[u.Id][v.Id]:
-                    edges_count += w.min_edges[u.Id]
-            edges_matrix[u.Id][v.Id] = edges_count
-
-    for vertex, distance  in enumerate(distances_matrix):
-        print(f'Distancia desde {vertex} hasta {distance}')
-        
-        print()
-    for vertex, edge  in enumerate(edges_matrix):
-        print(f'Cantidad de aristas involucradas desde {vertex} hasta {edge}')
-
+                if distances_matrix[u.Id][w.Id] + distances_matrix[v.Id][w.Id] == distances_matrix[u.Id][v.Id]:
+                    edges_count += w.min_edges[ind_u]
+            edges_matrix[ind_u][ind_v] = edges_count
     return distances_matrix, edges_matrix
 
 
-def dijkstra_modificado(graph, start):
-    distances = [float('inf') for vertex in graph]
+def dijkstra_modificado(graph:Graph, start:Vertex,start_ind):
+    distances = [float('inf') for _ in graph.vertex]
     distances[start.Id] = 0
-    visited = [False] * len(graph)
-
+    visited = [False] * len(graph.vertex)
     priority_queue = [(0, start)]
-
+    
     while priority_queue:
         current_distance, current_vertex = heapq.heappop(priority_queue)
+        
         if visited[current_vertex.Id]:
             continue
 
@@ -49,10 +44,10 @@ def dijkstra_modificado(graph, start):
             
             if distance < distances[neighbor.Id]:
                 distances[neighbor.Id] = distance
-                neighbor.min_edges[start.Id] = 1 
+                neighbor.min_edges[start_ind] = 1
                 heapq.heappush(priority_queue, (distance, neighbor))
             elif distance == distances[neighbor.Id]:
-                neighbor.min_edges[start.Id]  += 1 
+                neighbor.min_edges[start_ind] += 1 
 
     return distances
 
@@ -73,20 +68,4 @@ def dijkstra_modificado(graph, start):
 #    'C': {'A': 0, 'B': 0, 'C': 0, 'D': 0 },
 #    'D': {'A': 0, 'B': 0, 'C': 0, 'D': 0 }
 #}
-graph = []
-for i in range(4):
-    v = Vertex()
-    graph.append(v)
 
-make_edge(graph[0], graph[1], 5)
-make_edge(graph[0], graph[2], 2)
-make_edge(graph[1], graph[2], 3)
-make_edge(graph[1], graph[3], 3)
-make_edge(graph[2], graph[3], 6)
-
-
-distance, edges = optimal_solver(graph,graph)
-
-print("Distancia: ", distance)
-print()
-print("Aristas: ", edges)
