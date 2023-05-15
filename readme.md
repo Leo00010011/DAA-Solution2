@@ -22,7 +22,7 @@ La solución se basa en la propiedad de que el conjunto de las aristas que parti
 
 Luego para calcular las aristas que participan en algún camino de costo mínimo que parte de $s$ usamos la propiedad de que una arista $<u,v>$ con $\delta(s,u) < \delta(s,v)$ cumple esto ssi $\delta(s,v) = \delta(s,u) + w(<u,v>)$
 
-Para calcular los vértices que participan en un camino de costo mínimo de $s$ a $t$ usamos la propiedad de que un vértice cumple esto ssi $\delta(s,t) = \delta(s,v) + \delta(v,t)$
+Para calcular los vértices que participan en un camino de costo mínimo de $s$ a $t$ usamos la propiedad de que un vértice $v$ cumple esto ssi $\delta(s,t) = \delta(s,v) + \delta(v,t)$
 
 Luego se puede utilizar el algoritmo de dijkstra para calcular, para cada punto importante, los caminos de costo mínimo y la aristas que participen en algunos de estos caminos. Para esto vamos a asignarle un array de tamaño $|V|$ a cada vértice $v$, donde almacenaremos en el índice $i$ la cantidad de aristas que cumplen que: 
 
@@ -54,7 +54,7 @@ def optimal_solver(graph:Graph,principal_vertex:list[Vertex]):
         # los valores de min_edge de cada vértice correspondientes a 
         # vertex
         distances_matrix[vertex.Id] = dijkstra_modificado(graph, vertex,vertex_ind)
-    
+
 
     # Por cada combinacion de principal vertex se acumula el valor
     # de min_edges de los vertices que participan en algun camino 
@@ -70,7 +70,6 @@ def optimal_solver(graph:Graph,principal_vertex:list[Vertex]):
                     edges_count += w.min_edges[ind_u]
             edges_matrix[ind_u][ind_v] = edges_count
     return distances_matrix, edges_matrix
-
 ```
 
 La implementación del Dijkstra Modificado
@@ -81,10 +80,10 @@ def dijkstra_modificado(graph:Graph, start:Vertex,start_ind):
     distances[start.Id] = 0
     visited = [False] * len(graph.vertex)
     priority_queue = [(0, start)]
-    
+
     while priority_queue:
         current_distance, current_vertex = heapq.heappop(priority_queue)
-        
+
         if visited[current_vertex.Id]:
             continue
 
@@ -92,7 +91,7 @@ def dijkstra_modificado(graph:Graph, start:Vertex,start_ind):
 
         for neighbor, weight  in current_vertex.neighbourhood:
             distance = current_distance + weight
-            
+
             if distance < distances[neighbor.Id]:
                 # En el caso de dar menor todas 
                 # las aristas que se habían contando anteriormente 
@@ -137,25 +136,23 @@ Como mencionó en la sección pasada vamos a aprovechar la ejecución del algori
 
 - **Demostración:** 
   
-  - (Si la arista cumple entonces hay un relax que lo cuenta) Sea $<u,v>$ una arista que participa en un camino de costo mínimo que parte de $s$ y sea $\delta(s,u) < \delta(s,v)$ entonces se sabe que por como funciona dijksrta $u$ va a salir primero del heap y en el momento que haga relax a sus adyacentes va a hacer relax a la arista $<u,v>$, y pueden ocurrir dos casos, que el relax de menor o que de igual. Si da menor entonces se asigna 1 por lo que se cuenta esta arista y si da igual se incrementa el valor por lo que también se cuenta esta arista. Tambien por propiedades del algoritmo de dijkstra se sabe que en el momento que se saca a $u$ del heap ya este tiene asignado su longitud de camino de costo mínimo y en el momento que se le haga relax a $<u,v>$ se le asigna el la longitud de camino de costomínimo a $v$ o se mantiene (cuando da menor o da igual) y para ningun otro relax va a dar menor; por lo que una vez incrementado con una arista que cumple no se va a volver a asignar 1.
+  - (Si la arista cumple entonces hay un relax que lo cuenta) Sea $<u,v>$ una arista que participa en un camino de costo mínimo que parte de $s$ y sea $\delta(s,u) < \delta(s,v)$ entonces se sabe que por como funciona dijksrta $u$ va a salir primero del heap y en el momento que haga relax a sus adyacentes va a hacer relax a la arista $<u,v>$, y pueden ocurrir dos casos, que el relax de menor o que de igual. Si da menor entonces se asigna 1 por lo que se cuenta esta arista y si da igual se incrementa el valor por lo que también se cuenta esta arista. Tambien por propiedades del algoritmo de dijkstra se sabe que en el momento que se saca a $u$ del heap ya este tiene asignado su longitud de camino de costo mínimo y en el momento que se le haga relax a $<u,v>$ se le asigna el la longitud de camino de costo mínimo a $v$ o se mantiene (cuando da menor o da igual) y para ningun otro relax va a dar menor; por lo que una vez incrementado con una arista que cumple no se va a volver a asignar 1.
   
   - (Si el relax lo cuenta entonces es una arista que cumple) Sea $<u,v>$ una arista con la que se hizo relax y dió menor o igual.  En el caso de que la arista no pertenezca a un camino de costo mínimo entonces en ese relax no se le asignó la longitud del camino de costo mínimo a $v$ por lo que eventualmente va a venir el primer relax que le asigne el costo mínimo y se va a descontar todo lo que se contó anterior a eso y cualquier arista que de igual después de este momento (ya más nadie puede dar menor) es una arista que participa en un camino de costo mínimo por la **Propiedad 2**. Como se está haciendo el conteo en el array del vertice al que se le está haciendo relax y este por como funciona dijkstra tiene costo mayor o igual  a $u$ también queda demostrado que se almacena en el array del vertice más lejano a $s$ de los dos que relaciona la arista.
 
 Luego por cada par de origen $s$ y destino $t$, calculamos las aristas que participan en un camino de $s$ a $t$ recorriendo los vértices y acumulando el valor de su array en la posición correspondiente a $s$ si cumple que $\delta(s,t) = \delta(s,u) + \delta(v,t)$, como el grafo es no dirigido  $\delta(v,t) = \delta(t,v)$ y se va a almacenar en un array bidimensional en la posición correspondiente  los pares de vértices $s$ y $t$ . Cuando se haga esto por cada par va a quedar en ese array en la posición correspondiente a cualqueir par de origen $s$ y destino $t$ la cantidad de aristas que participan en un camino de costo mínimo de $s$ a $t$.
 
-- **Demostración:** Por la **Propiedad 3** sabemos que los vértices que cumplen $\delta(s,t) = \delta(s,u) + \delta(v,t)$ son vertices que participan en algún camino de costo mínimo; por lo que estamos acumulando son las aritstas que participan en algún camino de costo mínimo que parte de s donde el vértice más lejano a s, de los dos vértices que relaciona, pertenece a un camino de costo mínimo de s a t, que por la **Propiedad 1** son las aristas que participan en algún camino de costo mínimo. Cada arista es contada una única vez porque se cuenta solo en el vértice más lejano a $s$ 
+- **Demostración:** Por la **Propiedad 3** sabemos que los vértices $u$ que cumplen $\delta(s,t) = \delta(s,u) + \delta(u,t)$ son vertices que participan en algún camino de costo mínimo; por lo que estamos acumulando son las aritstas que participan en algún camino de costo mínimo que parte de s donde el vértice más lejano a s, de los dos vértices que relaciona, pertenece a un camino de costo mínimo de s a t, que por la **Propiedad 1** son las aristas que participan en algún camino de costo mínimo de $s$ a $t$ . Cada arista es contada una única vez porque se cuenta solo en el vértice más lejano a $s$ 
 
 ### Análisis de la complejidad
 
-Nuestro algoritmo consiste en realizar O($|V|$) veces un algoritmo de dijkstra con modificaciones que no afectan su complejidad por lo que en el peor caso es O($|V|^2$) Por lo que la complejidad de esa parte queda O($|V|^3$). El resto es un doble for por los posibles orígenes que es O($|V|^2$) y dentro un recorrido por el resto de los vértices que es O($|V|$) por lo que en total que O($|V|^3$) por lo que el algoritmo entero es O($|V|^3$)
+Nuestro algoritmo consiste en realizar O($|V|$) veces un algoritmo de dijkstra con modificaciones que no afectan su complejidad por lo que en el peor caso es O($|V|^2$) Por lo que la complejidad de esa parte queda O($|V|^3$). El resto es un doble for por los posibles orígenes que es O($|V|^2$) y dentro un recorrido por el resto de los vértices que es O($|V|$) por lo que en total que O($|V|^3$); por lo que el algoritmo entero es O($|V|^3$)
 
-Como se realiza dijkstra O($|V|$) veces, la complejidad de esa parte que da en O($|V|^3$) por lo que es tentador usar floyd warshall teniendo en cuenta que se conoce que en estos casos la complejidad es la misma pero su constante es menor; pero si se tiene en cuenta que la cantidad de puntos importantes debe ser considerablemente menor que el resto de los vértices y que en una ciudad los intercepciones de las calles tienen en promedio solo cuatro aristas, por lo que el grafo no debe ser denso, se puede decir que la complejidad temporal de la solución que usa dijkstra es bastante menor que la que usa floyd warshall. En sí, esta primera parte que consiste en ejecutar el dijkstra modificado desde los $N$ puntos principales tiene como complejidad O($NElog(V)$) y la segunda parte tiene como complejidad O($N^2V$) por lo que la complejidad del algoritmo es O($N(Elog(V) + NV)$) cuando la solución con Floyd Warshall siempre es O($V^3$)
-
-
+Como se realiza dijkstra O($|V|$) veces, la complejidad de esa parte que da en O($|V|^3$) por lo que es tentador usar floyd warshall teniendo en cuenta que se conoce que en estos casos la complejidad es la misma pero su constante es menor; pero si se tiene en cuenta que la cantidad de puntos importantes debe ser considerablemente menor que el resto de los vértices y que en una ciudad los intercepciones de las calles tienen en promedio solo cuatro aristas, por lo que el grafo no debe ser denso, se puede decir que la orden de crecimiento de la solución que usa dijkstra es bastante menor que la que usa floyd warshall. En sí, esta primera parte que consiste en ejecutar el dijkstra modificado desde los $N$ puntos principales tiene como complejidad O($NElog(V)$) y la segunda parte tiene como complejidad O($N^2V$) por lo que la complejidad del algoritmo es O($N(Elog(V) + NV)$) cuando la solución con Floyd Warshall siempre es O($V^3$)
 
 ### El Tester
 
-Para mostrar la correctitud del la solución se implementó un tester que genera un grafo aleatorio con la cantidad de vertices, aristas y puntos importantes especificados y compara  los resultados de nuestra con una solución más sencilla que se resuelve en O(E*V^2). Esta solución consiste en contar por cada par posible de origenes y destino las aristas $<u,v>$ que cumplen:
+Para mostrar la correctitud del la solución se implementó un tester que genera un grafo aleatorio con la cantidad de vertices, aristas y puntos importantes especificados y compara  los resultados de nuestra con una solución más sencilla que se resuelve en O(E*V^2). Esta solución consiste en contar, por cada par posible de origenes y destino, las aristas $<u,v>$ que cumplen:
 
 $$
 min(\delta(origen,u),\delta(origen,u)) + w(<u,v>) + min(\delta(destino,v),\delta(destino,u)) = \delta(origen,destino)
@@ -167,4 +164,4 @@ La propiedad que respalada esto es que una arista participa en un camino de cost
   
   - ($A \Rightarrow B$) supongamos que una arista pertenece a un camino de costo mínimo de $s$ a $t$. Si $w(<u,v>) \neq 0$ tiene que existir un vértice que es más cercano a $s$ que a $t$ y el otro tiene que ser más cercano a $t$ que a $s$, supongamos sin pérdida de generalidad que $u$ es más cercano a $s$ y que $v$ es más cercano a $t$. Siguiente a esto podemos notar que $\delta(s,t) = \delta(s,u) + w(u,v) + \delta(t,v)$ o lo que es equivalente $\delta(s,t) = min(\delta(s,u),\delta(s,v)) +w(u,v)+ min(\delta(t,u),\delta(t,v))$ 
   
-  - ($B \Rightarrow A$) Sean $<u,v>$ una arista que cumple que  $w(u,v) \neq 0$  y $ \delta(s,t) = min(\delta(s,u),\delta(s,v)) + w(u,v) + min(\delta(t,u),\delta(t,v))$. 
+  - ($B \Rightarrow A$) Sean $<u,v>$ una arista que cumple que  $w(u,v) \neq 0$  y $ \delta(s,t) = min(\delta(s,u),\delta(s,v)) + w(u,v) + min(\delta(t,u),\delta(t,v))$. Supongamos, sin pérdida de generalidad, que $min(\delta(s,u),\delta(s,v)) = \delta(s,u) $ , entonces no se puede cumplir $min(\delta(t,u),\delta(t,v)) = \delta(t,u)$ porque en tal caso podríamos construir un camino de costo mínimo que probara que $\delta(s,t) = \delta(s,u) + \delta(t,u)$, que es distinto que la longitud de camino mínimo que se plantea en la hipótesis. Por lo que sabemos que los mínimos tienen que escoger caminos que van a extremos distintos de la arista por lo que la ecuación de la hipótesis tiene la forma :$\delta(s,t) = \delta(s,u) + w(u,v) + \delta(t,v)$. Por lo que se puede construir un camino desde $s$ hasta el extremo más cercano a él de la arista (por ejemplo $u$), pasar por la arista y usar el camino de costo mínimo desde $t$ hasta $v$, por lo que esa arista partcipa en un camino de costo mínimo de $s$ a $t$.
