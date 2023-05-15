@@ -3,15 +3,27 @@ from structures import Graph, Vertex
 
 
 def optimal_solver(graph:Graph,principal_vertex:list[Vertex]): 
-    #Primero hago Dijkstra para todos los vertices del grafo
+    # array bidimensional en el que se van a almacenar la respuesta
     edges_matrix = [[0]*len(principal_vertex) for _ in principal_vertex]
+    # array de distancias
     distances_matrix = [[0]*len(graph.vertex) for _ in graph.vertex]
     for vertex in graph.vertex:
+        # artributo en la que se van a almacenar las aristas 
+        # que participan en un camino de costo mínimo que parte
+        # desde alguno de los vértices principales
         vertex.min_edges = [0]*len(principal_vertex)
 
     for vertex_ind, vertex in enumerate(principal_vertex):
+        # aquí además de resolver las distancias de los caminos de 
+        # costo mínimo que parten de vertex también se calculan 
+        # los valores de min_edge de cada vértice correspondientes a 
+        # vertex
         distances_matrix[vertex.Id] = dijkstra_modificado(graph, vertex,vertex_ind)
     
+
+    # Por cada combinacion de principal vertex se acumula el valor
+    # de min_edges de los vertices que participan en algun camino 
+    # de costo mínimo de ese par
     for ind_u in range(len(principal_vertex)):
         u = principal_vertex[ind_u]
         for ind_v in range(ind_u + 1, len(principal_vertex)):
@@ -44,11 +56,13 @@ def dijkstra_modificado(graph:Graph, start:Vertex,start_ind):
             
             if distance < distances[neighbor.Id]:
                 distances[neighbor.Id] = distance
+                # En el caso de dar menor todas las aristas que se habían contando anteriormente dejan de tener valor
+                # y se cuenta la arista responsable de este relax
                 neighbor.min_edges[start_ind] = 1
                 heapq.heappush(priority_queue, (distance, neighbor))
             elif distance == distances[neighbor.Id]:
+                # En caso de que de igual se suma esta arista al conjunto de las aristas que pertenecen a min_edge
                 neighbor.min_edges[start_ind] += 1 
-
     return distances
 
 # Cada vertice tiene los costos de sus aristas con sus respectivos adyacentes y un diccionario

@@ -8,25 +8,104 @@
 
 ### Descripcion del problema
 
+<div>
+<center><h4>Lázaro Presidente del PCC</h4></center>
+</div>
+
+Han pasado 20 años desde que Lázaro se graduó de Ciencias de la Computación (haciendo una muy buena tesis) y las vueltas de la vida lo llevaron a convertirse en el presidente del Partido Comunista de Cuba. Una de sus muchas responsabilidades consiste en visitar zonas remotas. En esta ocasión debe visitar una ciudad campestre de Pinar del Río.  
+
+También han pasado 20 años desde que Marié consiguió su título en MAT- COM. Tras años de viaje por las grandes metrópolis del mundo, en algún punto  decidió que prefería vivir una vida tranquila, aislada de la urbanización, en una  tranquila ciudad de Pinar del Río. Las vueltas de la vida quisieron que precisamente Marié fuera la única iniversitaria habitando la ciudad que Lázaro se dispone a visitar. Los habitantes de la zona entraron en pánico ante la visita de una figura tan importante y decidieron reparar las calles de la ciudad por las que transitaría  Lázaro. El problema está en que nadie sabía qué ruta tomaría el presidente y  decidieron pedirle ayuda a Marié. La ciudad tiene n puntos importantes, unidos entre sí por calles cuyos  tamaños se conoce. Se sabe que Lázaro comenzará en alguno de esos puntos (s) y terminará el viaje en otro (t). Los ciudadanos quieren saber, para cada par s, t, cuántas calles participan en algún camino de distancia mínima entre s y t.
+
 ### La idea de la solución
 
 La solución se basa en la propiedad de que el conjunto de las aristas que participan en un camino de costo mínimo de $s$ a $t$, es igual a la intercepción del conjunto de las aritstas que participan en algún camino de costo mínimo que parte de $s$, con el conjunto de las aristas donde el vértice más lejano a $s$, de los dos vértices que relaciona, pertenece a un camino de costo mínimo de $s$ a $t$. 
 
-Luego para calcular las aristas que participan en algun camino de costo mínimo que parte de $s$ usamos la propiedad de que una arista $<u,v>$ con $\delta(s,u) < \delta(s,v)$ cumple esto ssi $\delta(s,u) = \delta(s,u) + w(<u,v>)$
+Luego para calcular las aristas que participan en algún camino de costo mínimo que parte de $s$ usamos la propiedad de que una arista $<u,v>$ con $\delta(s,u) < \delta(s,v)$ cumple esto ssi $\delta(s,v) = \delta(s,u) + w(<u,v>)$
 
 Para calcular los vértices que participan en un camino de costo mínimo de $s$ a $t$ usamos la propiedad de que un vértice cumple esto ssi $\delta(s,t) = \delta(s,v) + \delta(v,t)$
 
-Luego se puede utilizar el algoritmo de dijkstra para calcular, para cada posible origen, los caminos de costo mínimo y la aristas que participen en algunos de estos caminos. Para esto vamos a asignarle un array de tamaño $|V|$ a cada vértice $v$, donde almacenaremos en el índice $i$ la cantidad de aristas que cumplen que: 
+Luego se puede utilizar el algoritmo de dijkstra para calcular, para cada punto importante, los caminos de costo mínimo y la aristas que participen en algunos de estos caminos. Para esto vamos a asignarle un array de tamaño $|V|$ a cada vértice $v$, donde almacenaremos en el índice $i$ la cantidad de aristas que cumplen que: 
 
 - participan en un camino de costo mínimo que parte de $V_i$ 
 
-- de los dos vértices que relaciona la arista el más lejano a ese origen es $v$
+- de los dos vértices que relaciona la arista el más lejano a $V_i$ es $v$
 
 Los valores de este array los calcularemos aprovechando el relax que necesita hacer dijkstra, haciendo incrimentar el valor de la posición $i$ si da igual y asignandole 1 si da menor.
 
 Teniendo calculado esto se puede resolver en O($|V|$) las aristas que participan en un camino de costo mínimo de $s$ a $t$ acumulando lo que tiene cada vertice que participa en un camino de costo mínimo de $s$ a $t$ en su array en la posición correspondiente a $s$. Por lo que iterando por cada posible origen y final y haciendo lo anterior se puede resolver esto en O($|V|^3$) y hacer $|V|$ dijkstras es O($|V|^3$) también por lo que la solución quedaría O($|V|^3$)
 
 ### El algoritmo
+
+```python
+def optimal_solver(graph:Graph,principal_vertex:list[Vertex]): 
+    # array bidimensional en el que se van a almacenar la respuesta
+    edges_matrix = [[0]*len(principal_vertex) for _ in principal_vertex]
+    # array de distancias
+    distances_matrix = [[0]*len(graph.vertex) for _ in graph.vertex]
+    for vertex in graph.vertex:
+        # artributo en la que se van a almacenar las aristas 
+        # que participan en un camino de costo mínimo que parte
+        # desde alguno de los vértices principales
+        vertex.min_edges = [0]*len(principal_vertex)
+
+    for vertex_ind, vertex in enumerate(principal_vertex):
+        # aquí además de resolver las distancias de los caminos de 
+        # costo mínimo que parten de vertex también se calculan 
+        # los valores de min_edge de cada vértice correspondientes a 
+        # vertex
+        distances_matrix[vertex.Id] = dijkstra_modificado(graph, vertex,vertex_ind)
+    
+
+    # Por cada combinacion de principal vertex se acumula el valor
+    # de min_edges de los vertices que participan en algun camino 
+    # de costo mínimo de ese par
+    for ind_u in range(len(principal_vertex)):
+        u = principal_vertex[ind_u]
+        for ind_v in range(ind_u + 1, len(principal_vertex)):
+            v = principal_vertex[ind_v]
+            edges_count = v.min_edges[ind_u]
+            for w in graph.vertex:
+                if u == w or v == w: continue
+                if distances_matrix[u.Id][w.Id] + distances_matrix[v.Id][w.Id] == distances_matrix[u.Id][v.Id]:
+                    edges_count += w.min_edges[ind_u]
+            edges_matrix[ind_u][ind_v] = edges_count
+    return distances_matrix, edges_matrix
+
+```
+
+La implementación del Dijkstra Modificado
+
+```python
+def dijkstra_modificado(graph:Graph, start:Vertex,start_ind):
+    distances = [float('inf') for _ in graph.vertex]
+    distances[start.Id] = 0
+    visited = [False] * len(graph.vertex)
+    priority_queue = [(0, start)]
+    
+    while priority_queue:
+        current_distance, current_vertex = heapq.heappop(priority_queue)
+        
+        if visited[current_vertex.Id]:
+            continue
+
+        visited[current_vertex.Id] = True
+
+        for neighbor, weight  in current_vertex.neighbourhood:
+            distance = current_distance + weight
+            
+            if distance < distances[neighbor.Id]:
+                # En el caso de dar menor todas 
+                # las aristas que se habían contando anteriormente 
+                # dejan de tener valor y se cuenta la arista 
+                # responsable de este relax      
+                distances[neighbor.Id] = distance   
+                neighbor.min_edges[start_ind] = 1
+                heapq.heappush(priority_queue, (distance, neighbor))
+            elif distance == distances[neighbor.Id]:
+                # En caso de que de igual se suma esta arista al conjunto de las aristas que pertenecen a min_edge
+                neighbor.min_edges[start_ind] += 1 
+    return distances
+```
 
 ### Demostración de la Correctitud
 
@@ -52,7 +131,7 @@ Teniendo calculado esto se puede resolver en O($|V|$) las aristas que participan
   
   - ($A \Rightarrow B$) Si un vertice participa en un camino de costo mínimo de $s$ a $t$ es evidente que se cumple que $\delta(s,t) = \delta(s,v) + \delta(v,t)$ 
   
-  - Sea $v$ un vértice que cumple $\delta(s,t) = \delta(s,v) + \delta(v,t)$ entonces sea $P$ un camino de longitud mínima de $s$ a $v$ y $Q$ un camino de longitud mínima de $v$ a $t$ entonces la concatenación de estos dos caminos es un camino de $s$ a $t$ con longitud $\delta(s,t)$ por lo que es un camino de longitud mínima de $s$ a $t$ que contiene a $v$ 
+  - ($B \Rightarrow A$) Sea $v$ un vértice que cumple $\delta(s,t) = \delta(s,v) + \delta(v,t)$ entonces sea $P$ un camino de longitud mínima de $s$ a $v$ y $Q$ un camino de longitud mínima de $v$ a $t$ entonces la concatenación de estos dos caminos es un camino de $s$ a $t$ con longitud $\delta(s,t)$ por lo que es un camino de longitud mínima de $s$ a $t$ que contiene a $v$ 
 
 Como mencionó en la sección pasada vamos a aprovechar la ejecución del algoritmo de dijkstra desde el origen $s$ para almacenar en una posición correspondiente a $s$ de un array que tiene cada vértice $v$ un valor que se va a ir incrementando con cada relax hacia ese vértice que de igual y asignandole 1 si da menor. Al terminar la ejecución en la posición correspondiente s en el array de  cada vértice $v$ va a estar la cantidad de aristas que participan en un camino de costo mínimo que parte desde $s$ que cumplen que su vertice más lejano s, de los dos que relaciona esa arista, es ese vértice $v$. 
 
@@ -68,4 +147,24 @@ Luego por cada par de origen $s$ y destino $t$, calculamos las aristas que parti
 
 ### Análisis de la complejidad
 
-Nuestro algoritmo consiste en realizar O($|V|$) veces un algoritmo de dijkstra con modificaciones que no afectan su complejidad por lo que en el peor caso es O($|V|^2$) Por lo que la complejidad de esa parte queda O($|V|^3$). Es un doble for por los posibles orígenes que es O($|V|^2$) y dentro un recorrido por el resto de los vértices que es O($|V|$) por lo que en total que O($|V|^3$) por lo que el algoritmo entero es O($|V|^3$)
+Nuestro algoritmo consiste en realizar O($|V|$) veces un algoritmo de dijkstra con modificaciones que no afectan su complejidad por lo que en el peor caso es O($|V|^2$) Por lo que la complejidad de esa parte queda O($|V|^3$). El resto es un doble for por los posibles orígenes que es O($|V|^2$) y dentro un recorrido por el resto de los vértices que es O($|V|$) por lo que en total que O($|V|^3$) por lo que el algoritmo entero es O($|V|^3$)
+
+Como se realiza dijkstra O($|V|$) veces, la complejidad de esa parte que da en O($|V|^3$) por lo que es tentador usar floyd warshall teniendo en cuenta que se conoce que en estos casos la complejidad es la misma pero su constante es menor; pero si se tiene en cuenta que la cantidad de puntos importantes debe ser considerablemente menor que el resto de los vértices y que en una ciudad los intercepciones de las calles tienen en promedio solo cuatro aristas, por lo que el grafo no debe ser denso, se puede decir que la complejidad temporal de la solución que usa dijkstra es bastante menor que la que usa floyd warshall. En sí, esta primera parte que consiste en ejecutar el dijkstra modificado desde los $N$ puntos principales tiene como complejidad O($NElog(V)$) y la segunda parte tiene como complejidad O($N^2V$) por lo que la complejidad del algoritmo es O($N(Elog(V) + NV)$) cuando la solución con Floyd Warshall siempre es O($V^3$)
+
+
+
+### El Tester
+
+Para mostrar la correctitud del la solución se implementó un tester que genera un grafo aleatorio con la cantidad de vertices, aristas y puntos importantes especificados y compara  los resultados de nuestra con una solución más sencilla que se resuelve en O(E*V^2). Esta solución consiste en contar por cada par posible de origenes y destino las aristas $<u,v>$ que cumplen:
+
+$$
+min(\delta(origen,u),\delta(origen,u)) + w(<u,v>) + min(\delta(destino,v),\delta(destino,u)) = \delta(origen,destino)
+$$
+
+La propiedad que respalada esto es que una arista participa en un camino de costo mínimo de $s$ a $t$ ssi cumplen la propiedad anterior
+
+- **Demostración**:
+  
+  - ($A \Rightarrow B$) supongamos que una arista pertenece a un camino de costo mínimo de $s$ a $t$. Si $w(<u,v>) \neq 0$ tiene que existir un vértice que es más cercano a $s$ que a $t$ y el otro tiene que ser más cercano a $t$ que a $s$, supongamos sin pérdida de generalidad que $u$ es más cercano a $s$ y que $v$ es más cercano a $t$. Siguiente a esto podemos notar que $\delta(s,t) = \delta(s,u) + w(u,v) + \delta(t,v)$ o lo que es equivalente $\delta(s,t) = min(\delta(s,u),\delta(s,v)) +w(u,v)+ min(\delta(t,u),\delta(t,v))$ 
+  
+  - ($B \Rightarrow A$) Sean $<u,v>$ una arista que cumple que  $w(u,v) \neq 0$  y $ \delta(s,t) = min(\delta(s,u),\delta(s,v)) + w(u,v) + min(\delta(t,u),\delta(t,v))$. 
